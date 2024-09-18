@@ -1,0 +1,208 @@
+[gd_scene load_steps=14 format=3 uid="uid://douqcwh3fv35j"]
+
+[ext_resource type="Script" path="res://scripts/game.gd" id="1_2q5gc"]
+[ext_resource type="PackedScene" uid="uid://1a45vv8sacpp" path="res://scenes/plane.tscn" id="1_bh007"]
+[ext_resource type="PackedScene" uid="uid://7o48c07ec4bt" path="res://scenes/sliding_camera.tscn" id="2_uw2ot"]
+[ext_resource type="Script" path="res://scripts/rock_spawner.gd" id="3_8w22i"]
+[ext_resource type="PackedScene" uid="uid://spy54m21a7l2" path="res://scenes/rock.tscn" id="4_v6trc"]
+[ext_resource type="Theme" uid="uid://byvbplq7kuk0n" path="res://default.tres" id="6_76o4b"]
+[ext_resource type="Script" path="res://scripts/ui.gd" id="6_k26b7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gkdi8"]
+content_margin_left = 25.0
+content_margin_top = 25.0
+content_margin_right = 25.0
+content_margin_bottom = 25.0
+
+[sub_resource type="Animation" id="Animation_xnik6"]
+resource_name = "slide_in"
+length = 0.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("UI:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("UI/Control/Panel:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("UI/Control/VBox:position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.35, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -648), Vector2(0, 0), Vector2(0, 50), Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_1hhiw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("UI:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("UI/Control/Panel:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("UI/Control/VBox:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -648)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_noh8l"]
+_data = {
+"RESET": SubResource("Animation_1hhiw"),
+"slide_in": SubResource("Animation_xnik6")
+}
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_covkj"]
+normal = Vector2(0, 1)
+distance = -324.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_v38pw"]
+distance = -324.0
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_2q5gc")
+
+[node name="Plane" parent="." instance=ExtResource("1_bh007")]
+
+[node name="SlidingCamera" parent="." node_paths=PackedStringArray("target") instance=ExtResource("2_uw2ot")]
+target = NodePath("../Plane")
+
+[node name="RockSpawner" type="Node2D" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("3_8w22i")
+rock_scene = ExtResource("4_v6trc")
+player = NodePath("../Plane")
+
+[node name="SpawnTimer" type="Timer" parent="RockSpawner"]
+wait_time = 0.5
+autostart = true
+
+[node name="UI" type="CanvasLayer" parent="."]
+process_mode = 3
+script = ExtResource("6_k26b7")
+
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("6_76o4b")
+
+[node name="Panel" type="Panel" parent="UI/Control"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="UI/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -648.0
+offset_bottom = -648.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="Label" type="Label" parent="UI/Control/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 96
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gkdi8")
+text = "Game Over"
+horizontal_alignment = 1
+
+[node name="ButtonMargin" type="MarginContainer" parent="UI/Control/VBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 300
+theme_override_constants/margin_right = 300
+
+[node name="Buttons" type="VBoxContainer" parent="UI/Control/VBox/ButtonMargin"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="PlayAgain" type="Button" parent="UI/Control/VBox/ButtonMargin/Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Play Again"
+
+[node name="Quit" type="Button" parent="UI/Control/VBox/ButtonMargin/Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Quit"
+
+[node name="Animation" type="AnimationPlayer" parent="UI"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_noh8l")
+}
+
+[node name="WorldBounds" type="Node2D" parent="."]
+
+[node name="Upper" type="StaticBody2D" parent="WorldBounds"]
+
+[node name="Collision" type="CollisionShape2D" parent="WorldBounds/Upper"]
+shape = SubResource("WorldBoundaryShape2D_covkj")
+
+[node name="Lower" type="StaticBody2D" parent="WorldBounds"]
+
+[node name="Collision" type="CollisionShape2D" parent="WorldBounds/Lower"]
+shape = SubResource("WorldBoundaryShape2D_v38pw")
+
+[connection signal="crashed" from="Plane" to="." method="_on_player_crashed"]
+[connection signal="timeout" from="RockSpawner/SpawnTimer" to="RockSpawner" method="_spawn_rock"]
+[connection signal="pressed" from="UI/Control/VBox/ButtonMargin/Buttons/PlayAgain" to="UI" method="_on_play_again_pressed"]
+[connection signal="pressed" from="UI/Control/VBox/ButtonMargin/Buttons/Quit" to="UI" method="_on_quit_pressed"]

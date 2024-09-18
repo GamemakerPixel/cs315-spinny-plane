@@ -1,0 +1,63 @@
+[gd_scene load_steps=9 format=3 uid="uid://1a45vv8sacpp"]
+
+[ext_resource type="Script" path="res://scripts/plane.gd" id="1_kl5pq"]
+[ext_resource type="Texture2D" uid="uid://buej5io6lylu3" path="res://assets/art/PNG/Planes/planeYellow1.png" id="1_ve8s8"]
+[ext_resource type="Texture2D" uid="uid://gqirnc72eepm" path="res://assets/art/PNG/Planes/planeYellow2.png" id="2_hu0te"]
+[ext_resource type="Texture2D" uid="uid://btj2mrlr1qa13" path="res://assets/art/PNG/Planes/planeYellow3.png" id="3_irgun"]
+[ext_resource type="AudioStream" uid="uid://cbo308walqu40" path="res://assets/sound/Audio/impactGlass_heavy_000.ogg" id="5_fyqfo"]
+[ext_resource type="AudioStream" uid="uid://6qxljncx6t2y" path="res://assets/sound/Audio/footstep_snow_002.ogg" id="6_wi8gv"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tnl6f"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ve8s8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_hu0te")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_irgun")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_hu0te")
+}],
+"loop": false,
+"name": &"flap",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ve8s8")
+}],
+"loop": true,
+"name": &"glide",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wtu71"]
+radius = 32.0156
+
+[node name="Plane" type="RigidBody2D"]
+contact_monitor = true
+max_contacts_reported = 1
+script = ExtResource("1_kl5pq")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_tnl6f")
+animation = &"flap"
+autoplay = "glide"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_wtu71")
+
+[node name="FlapSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_fyqfo")
+bus = &"Sound"
+
+[node name="CrashSound" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("6_wi8gv")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]

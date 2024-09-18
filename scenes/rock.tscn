@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://spy54m21a7l2"]
+
+[ext_resource type="Texture2D" uid="uid://ds56nyv8n7ui" path="res://assets/art/PNG/rockIce.png" id="1_1igp6"]
+[ext_resource type="Script" path="res://scripts/rock.gd" id="1_l7utw"]
+
+[node name="Rock" type="StaticBody2D"]
+script = ExtResource("1_l7utw")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(0, -119)
+texture = ExtResource("1_1igp6")
+
+[node name="Collision" type="CollisionPolygon2D" parent="."]
+position = Vector2(0, -119)
+polygon = PackedVector2Array(-54, 120, 12, -119, 54, 120)
+
+[node name="Visibility" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(0, -119)
+rect = Rect2(-64, -120, 128, 240)
+
+[connection signal="screen_exited" from="Visibility" to="." method="_on_screen_exited"]
